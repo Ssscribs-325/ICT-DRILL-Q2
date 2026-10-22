@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Club Member Manager</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://pyscript.net/releases/2025.3.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2025.3.1/core.js">
+    </script>
+
+    <style>
+        body {
+            background: #f0f4f8;
+            background-image: url(images.jpeg);
+            font-family: Arial, sans-serif;
+            color: #243247;
+        }
+
+        .header {
+            background: #173b67;
+            color: white;
+            padding: 35px 20px;
+            text-align: center;
+        }
+
+        .main-card {
+            max-width: 850px;
+            margin: 35px auto;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px #00000012;
+        }
+
+        .section-title {
+            color: #173b67;
+            font-weight: bold;
+        }
+
+        .member-list {
+            background: #f8fafc;
+            border-radius: 10px;
+            min-height: 80px;
+            padding: 18px;
+        }
+
+        .member-item {
+            background: white;
+            border: 1px solid #dbe4ee;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+        }
+
+        .total-box {
+            background: #e3efff;
+            color: #173b67;
+            padding: 18px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .btn-add {
+            background: #173b67;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #24558b;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            color: #64748b;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <h1>Jedaibashi High School Arts Club</h1>
+        <p class="mb-0">(A fictional school club from the Blue Period manga/anime)</p>
+    </header>
+
+    <main class="container">
+        <div class="card main-card">
+            <div class="card-body p-4 p-md-5">
+
+                <h2 class="section-title h4 mb-3">Add a New Member</h2>
+                <p class="text-secondary">
+                    Enter the student's first name and last name below.
+                </p>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="first-name" class="form-label">
+                            First Name
+                        </label>
+                        <input
+                            type="text"
+                            id="first-name"
+                            class="form-control"
+                            placeholder="ex: Yatora"
+                        >
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="last-name" class="form-label">
+                            Last Name
+                        </label>
+                        <input
+                            type="text"
+                            id="last-name"
+                            class="form-control"
+                            placeholder="ex: Yaguchi"
+                        >
+                    </div>
+
+                    <div class="col-12">
+                        <button
+                            type="button"
+                            class="btn btn-add w-100 py-2"
+                            py-click="add_member"
+                        >
+                            + Add Member
+                        </button>
+                    </div>
+                </div>
+
+                <p id="message" class="mt-3 mb-0" role="status"></p>
+
+                <hr class="my-4">
+
+                <div class="total-box mb-4">
+                    <p class="mb-1">Total Number of Members</p>
+                    <h2 id="total-count" class="mb-0">8</h2>
+                </div>
+
+                <h2 class="section-title h4 mb-3">All Club Members</h2>
+                <div id="member-list" class="member-list">
+                    <p>Loading members...</p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p style="color:aliceblue"class="mb-0">"I finally felt like my art could swallow me whole." -Yatora</p>
+    </footer>
+
+    <script type="py">
+from pyscript import document, display
+
+grade_7 = {"Masako Saeki", "Shirota"}
+grade_8 = {"Shirai", "Yamamoto"}
+grade_9 = {"Maru Mori ", "Ryuji Ayukawa (Yuka)"}
+grade_10 = {"Yotasuke Takahashi", "Haruka Hashida"}
+master_set = grade_7 | grade_8 | grade_9 | grade_10
+def update_results():
+    sorted_members = sorted(master_set)
+    member_html = "".join(
+        f'<div class="member-item">{name}</div>'
+        for name in sorted_members
+    )
+
+    document.getElementById("member-list").innerHTML = member_html
+    document.getElementById("total-count").innerText = str(len(master_set))
+
+def add_member(event):
+    first_name = document.getElementById("first-name").value.strip()
+    last_name = document.getElementById("last-name").value.strip()
+    full_name = f"{first_name} {last_name}".strip()
+    valid_name = bool(first_name and last_name)
+    global master_set
+    master_set = master_set | ({full_name} if valid_name else set())
+    update_results()
+    message = (
+        f"{full_name} was added successfully!"
+        if valid_name
+        else "Please enter both a first name and a last name."
+    )
+    document.getElementById("message").innerText = message
+    document.getElementById("message").className = (
+        "mt-3 mb-0 " + ("text-success" if valid_name else "text-danger")
+    )
+
+    document.getElementById("first-name").value = ""
+    document.getElementById("last-name").value = ""
+
+
+#i think this loads the existing members in the club when the page loads in but im not so sure
+update_results()
+    </script>
+
+</body>
+</html>
